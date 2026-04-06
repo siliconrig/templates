@@ -1,19 +1,19 @@
-# flashbay GitLab CI/CD Template
+# siliconrig GitLab CI/CD Template
 #
 # Include in your .gitlab-ci.yml:
 #   include:
-#     - remote: 'https://raw.githubusercontent.com/flashbay-dev/fbay-integrations/main/templates/gitlab-ci.yml'
+#     - remote: 'https://raw.githubusercontent.com/siliconrig/srig-integrations/main/templates/gitlab-ci.yml'
 #
 # Then extend the template in your job:
 #   hil-test:
-#     extends: .flashbay-hil
+#     extends: .siliconrig-hil
 #     variables:
-#       FLASHBAY_BOARD: esp32-s3
-#       FLASHBAY_FIRMWARE: build/firmware.bin
+#       SRIG_BOARD: esp32-s3
+#       SRIG_FIRMWARE: build/firmware.bin
 #     script:
 #       - pytest tests/hil/ -v
 
-.flashbay-install:
+.siliconrig-install:
   before_script:
     - |
       OS=$(uname -s | tr '[:upper:]' '[:lower:]')
@@ -23,38 +23,38 @@
         aarch64) ARCH="arm64" ;;
         armv7l)  ARCH="armv7" ;;
       esac
-      TAG=$(curl -s https://api.github.com/repos/flashbay-dev/fbay-cli/releases/latest | jq -r .tag_name)
-      curl -sL "https://github.com/flashbay-dev/fbay-cli/releases/download/${TAG}/fbay-${OS}-${ARCH}" -o /usr/local/bin/fbay
-      chmod +x /usr/local/bin/fbay
-      fbay version
+      TAG=$(curl -s https://api.github.com/repos/siliconrig/srig-cli/releases/latest | jq -r .tag_name)
+      curl -sL "https://github.com/siliconrig/srig-cli/releases/download/${TAG}/srig-${OS}-${ARCH}" -o /usr/local/bin/srig
+      chmod +x /usr/local/bin/srig
+      srig version
 
 # Full HIL workflow: create session, flash, run user script, end session.
 # Override `script:` with your test commands.
-.flashbay-hil:
-  extends: .flashbay-install
+.siliconrig-hil:
+  extends: .siliconrig-install
   variables:
-    FLASHBAY_BOARD: ""
-    FLASHBAY_FIRMWARE: ""
-    FLASHBAY_SERIAL_TIMEOUT: "30s"
+    SRIG_BOARD: ""
+    SRIG_FIRMWARE: ""
+    SRIG_SERIAL_TIMEOUT: "30s"
   script:
-    - fbay serial --timeout "$FLASHBAY_SERIAL_TIMEOUT" --log serial-output.txt
+    - srig serial --timeout "$SRIG_SERIAL_TIMEOUT" --log serial-output.txt
     - cat serial-output.txt
   after_script:
-    - fbay session end || true
+    - srig session end || true
   artifacts:
     when: always
     paths:
       - serial-output.txt
 
 # Flash-only: create session, flash firmware, end session.
-.flashbay-flash:
-  extends: .flashbay-install
+.siliconrig-flash:
+  extends: .siliconrig-install
   variables:
-    FLASHBAY_BOARD: ""
-    FLASHBAY_FIRMWARE: ""
+    SRIG_BOARD: ""
+    SRIG_FIRMWARE: ""
   script:
-    - fbay session create --board "$FLASHBAY_BOARD"
-    - fbay flash "$FLASHBAY_FIRMWARE"
-    - fbay session end
+    - srig session create --board "$SRIG_BOARD"
+    - srig flash "$SRIG_FIRMWARE"
+    - srig session end
   after_script:
-    - fbay session end || true
+    - srig session end || true

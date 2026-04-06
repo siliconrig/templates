@@ -1,6 +1,6 @@
-# fbay-templates
+# srig-templates
 
-CI/CD templates for [flashbay](https://flashbay.dev) hardware-in-the-loop testing.
+CI/CD templates for [siliconrig](https://siliconrig.dev) hardware-in-the-loop testing.
 
 ## GitLab CI
 
@@ -8,13 +8,13 @@ Include the template in your `.gitlab-ci.yml`:
 
 ```yaml
 include:
-  - remote: 'https://raw.githubusercontent.com/flashbay-dev/templates/main/gitlab-ci.yml'
+  - remote: 'https://raw.githubusercontent.com/siliconrig/templates/main/gitlab-ci.yml'
 
 hil-test:
-  extends: .flashbay-hil
+  extends: .siliconrig-hil
   variables:
-    FLASHBAY_BOARD: esp32-s3
-    FLASHBAY_FIRMWARE: build/firmware.bin
+    SRIG_BOARD: esp32-s3
+    SRIG_FIRMWARE: build/firmware.bin
   script:
     - pytest tests/hil/ -v
 ```
@@ -23,15 +23,15 @@ hil-test:
 
 | Template | Description |
 |---|---|
-| `.flashbay-install` | Installs `fbay-cli` binary |
-| `.flashbay-hil` | Full HIL workflow — session, flash, serial capture, cleanup |
-| `.flashbay-flash` | Flash-only workflow — session, flash, cleanup |
+| `.siliconrig-install` | Installs `srig-cli` binary |
+| `.siliconrig-hil` | Full HIL workflow — session, flash, serial capture, cleanup |
+| `.siliconrig-flash` | Flash-only workflow — session, flash, cleanup |
 
 ### Variables
 
 | Variable | Description |
 |---|---|
-| `FLASHBAY_API_KEY` | API key (set in CI/CD settings, masked) |
-| `FLASHBAY_BOARD` | Board type (e.g., `esp32-s3`) |
-| `FLASHBAY_FIRMWARE` | Path to firmware binary |
-| `FLASHBAY_SERIAL_TIMEOUT` | Serial capture duration (default: `30s`) |
+| `SRIG_API_KEY` | API key (set in CI/CD settings, masked) |
+| `SRIG_BOARD` | Board type (e.g., `esp32-s3`) |
+| `SRIG_FIRMWARE` | Path to firmware binary |
+| `SRIG_SERIAL_TIMEOUT` | Serial capture duration (default: `30s`) |
